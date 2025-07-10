@@ -1,0 +1,45 @@
+{
+  "Files": [
+    {
+      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/2238da6f-afb7-4254-949b-af1a73b7ae3a_mehmet-can-atik-wadsyEWgoF0-unsplash.jpg",
+      "PackagePath": "staticwebassets/images/2238da6f-afb7-4254-949b-af1a73b7ae3a_mehmet-can-atik-wadsyEWgoF0-unsplash.jpg"
+    },
+    {
+      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/2d55a695-90fd-4fac-b7b6-8327fa9cf89d_james-qualtrough-XG5k76h93iA-unsplash.jpg",
+      "PackagePath": "staticwebassets/images/2d55a695-90fd-4fac-b7b6-8327fa9cf89d_james-qualtrough-XG5k76h93iA-unsplash.jpg"
+    },
+    {
+      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/36bf1216-fc2b-455e-b4f0-aff948f45c3a_pexels-falling4utah-1080953.jpg",
+      "PackagePath": "staticwebassets/images/36bf1216-fc2b-455e-b4f0-aff948f45c3a_pexels-falling4utah-1080953.jpg"
+    },
+    {
+      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/418f1c65-26cd-485d-82b4-802d9d70bbd1_clay-banks-mgLX9vQhxc8-unsplash.jpg",
+      "PackagePath": "staticwebassets/images/418f1c65-26cd-485d-82b4-802d9d70bbd1_clay-banks-mgLX9vQhxc8-unsplash.jpg"
+    },
+    {
+      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/c0213e1d-1ec4-481b-8d71-b8d4572395fb_tania-mousinho-vF0l0bqLRKY-unsplash.jpg",
+      "PackagePath": "staticwebassets/images/c0213e1d-1ec4-481b-8d71-b8d4572395fb_tania-mousinho-vF0l0bqLRKY-unsplash.jpg"
+    },
+    {
+      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/fbcea8ad-24a7-4a06-9c05-a8537fe4fd84_james-qualtrough-XG5k76h93iA-unsplash.jpg",
+      "PackagePath": "staticwebassets/images/fbcea8ad-24a7-4a06-9c05-a8537fe4fd84_james-qualtrough-XG5k76h93iA-unsplash.jpg"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.MapApp.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.MapApp.props",
+      "PackagePath": "build\\MapApp.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.MapApp.props",
+      "PackagePath": "buildMultiTargeting\\MapApp.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.MapApp.props",
+      "PackagePath": "buildTransitive\\MapApp.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

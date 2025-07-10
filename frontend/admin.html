@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Map Interface</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- Leaflet Control Geocoder CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="admin-header">
+        <h1>Admin Map Interface</h1>
+        <div class="menu-icon" id="menuIcon">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </div>
+    </div>
+
+    <!-- Side Navigation Menu -->
+    <div id="sideMenu" class="side-menu">
+        <a href="javascript:void(0)" class="close-btn">&times;</a>
+        <a href="index.html">Public Map</a>
+        <a href="admin.html">Admin Map</a>
+        <a href="view-pins.html">View All Pins</a>
+        <a href="login.html" id="loginLink">Login</a>
+        <a href="#" id="logoutLink" style="display:none;">Logout</a>
+    </div>
+
+    <!-- Overlay for Side Menu -->
+    <div id="overlay" class="overlay"></div>
+
+    <div id="mapid"></div>
+
+    <div class="pin-form-container" style="display: none;">
+        <h2>Add New Pin</h2>
+        <form id="pinForm">
+            <label for="lat">Latitude:</label>
+            <input type="text" id="lat" name="lat" readonly required>
+            <label for="lng">Longitude:</label>
+            <input type="text" id="lng" name="lng" readonly required>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4" required></textarea>
+            <label for="images">Images:</label>
+            <input type="file" id="images" name="images" accept="image/*" multiple>
+            <button type="submit">Add Pin</button>
+            <button type="button" id="cancelPin">Cancel</button>
+        </form>
+    </div>
+
+    <!-- Image Enlargement Dialog -->
+    <div id="imageDialog" class="image-dialog">
+        <span class="close-image-dialog">&times;</span>
+        <img id="enlargedImage" src="" alt="Enlarged Pin Image">
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Leaflet Control Geocoder JS -->
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script src="menu.js"></script>
+    <script src="admin.js" type="module"></script>
+</body>
+</html>

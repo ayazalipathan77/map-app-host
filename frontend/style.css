@@ -1,0 +1,553 @@
+.admin-header {
+    display: flex;
+    justify-content: space-between; /* Distribute items with space between them */
+    align-items: center;
+    padding: 0 5%;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.admin-header h1 {
+    margin: 0;
+    padding: 15px 0;
+    flex-grow: 1; /* Allow h1 to take available space */
+    text-align: center;
+}
+
+.admin-header .header-left,
+.admin-header .header-right {
+    display: flex;
+    align-items: center;
+    /* No flex-grow here, they should take only necessary space */
+}
+
+.admin-header button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    margin-left: 10px; /* Add margin for spacing */
+}
+
+.admin-header button:hover {
+    background-color: #0056b3;
+}
+
+/* Filter container styling */
+.filter-container {
+    display: flex;
+    justify-content: center;
+    padding: 15px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.filter-container input[type="text"] {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px; /* Rounded corners for a modern look */
+    font-size: 16px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filter-container input[type="text"]:focus {
+    border-color: #007bff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1), 0 0 8px rgba(0,123,255,0.25);
+    outline: none;
+}
+
+/* Existing styles below */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #0056b3;
+    padding: 20px 0;
+}
+
+#mapid {
+    height: 600px;
+    width: 90%;
+    margin: 20px auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.login-container, .pin-form-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 300px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+.login-container h1, .pin-form-container h2 {
+    color: #0056b3;
+    margin-bottom: 20px;
+}
+
+.login-container form, .pin-form-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.login-container label, .pin-form-container label {
+    text-align: left;
+    font-weight: bold;
+}
+
+.login-container input[type="text"],
+.login-container input[type="password"],
+.pin-form-container input[type="text"],
+.pin-form-container textarea,
+.pin-form-container input[type="file"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.login-container button, .pin-form-container button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.login-container button:hover, .pin-form-container button:hover {
+    background-color: #0056b3;
+}
+
+#message {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.admin-header button#logoutButton {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    text-transform: uppercase;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.20);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.admin-header button#logoutButton:hover {
+    background-color: #d32f2f;
+    box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.20);
+}
+
+.pin-form-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    width: 400px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.pin-form-container button[type="button"] {
+    background-color: #6c757d;
+    margin-top: 10px;
+}
+
+.pin-form-container button[type="button"]:hover {
+    background-color: #5a6268;
+}
+
+.leaflet-popup-content img {
+    max-width: 100px;
+    max-height: 100px;
+    margin: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* New styles for search container */
+.search-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.search-container input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 200px;
+}
+
+.search-container button {
+    padding: 8px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.search-container button:hover {
+    background-color: #218838;
+}
+
+/* New styles for pins container (view-pins.html) */
+.pins-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.pin-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.pin-card h3 {
+    margin-top: 0;
+    color: #0056b3;
+}
+
+.pin-card p {
+    font-size: 0.9em;
+    color: #555;
+}
+
+.pin-actions button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    margin: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.pin-actions button:hover {
+    background-color: #0056b3;
+}
+
+.pin-actions button.delete-btn {
+    background-color: #dc3545;
+}
+
+.pin-actions button.delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: center;
+}
+
+.modal-images img {
+    max-width: 120px;
+    max-height: 120px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Styles for edit-pin.html current images */
+#currentImages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    border: 1px dashed #ccc;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.current-image-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.current-image-item img {
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.current-image-item .delete-image-btn {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.current-image-item .delete-image-btn:hover {
+    background-color: #c82333;
+}
+
+/* Image Enlargement Dialog */
+.image-dialog {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 10000; /* High z-index to be on top of everything */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-dialog img {
+    max-width: 90%;
+    max-height: 90%;
+    display: block;
+    margin: auto;
+}
+
+.close-image-dialog {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.close-image-dialog:hover,
+.close-image-dialog:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Side Menu Styles */
+.side-menu {
+    height: 100%;
+    width: 0; /* 0 width by default, expands on click */
+    position: fixed;
+    z-index: 10001; /* Above everything else */
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s; /* Smooth transition */
+    padding-top: 60px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.side-menu a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.side-menu a:hover {
+    color: #f1f1f1;
+}
+
+.side-menu .close-btn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+/* Menu Icon (Hamburger) */
+.menu-icon {
+    cursor: pointer;
+    display: flex; /* Always display the hamburger icon */
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-sizing: border-box;
+    margin-right: 20px; /* Added margin-right to push it away from the title */
+}
+
+.menu-icon .bar1, .menu-icon .bar2, .menu-icon .bar3 {
+    width: 30px;
+    height: 3px;
+    background-color: #333;
+    margin: 4px 0;
+    transition: 0.4s;
+}
+
+/* Overlay */
+.overlay {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 10000; /* Below side menu, above content */
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.7);
+    overflow-x: hidden;
+    transition: 0.5s;
+}
+
+/* Adjust body and header for menu */
+body.menu-open {
+    overflow: hidden;
+}
+
+/* Shift content when menu is open */
+body.menu-open #mapid,
+body.menu-open .admin-header,
+body.menu-open .login-container,
+body.menu-open .pins-container,
+body.menu-open .pin-form-container,
+body.menu-open .pin-form-container.edit-pin-form-container,
+body.menu-open .filter-container {
+    margin-left: 250px; /* Shift content by menu width */
+    transition: margin-left 0.5s;
+}
+
+/* Reset margin when menu is closed */
+#mapid,
+.admin-header,
+.login-container,
+.pins-container,
+.pin-form-container,
+.pin-form-container.edit-pin-form-container,
+.filter-container {
+    transition: margin-left 0.5s;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .admin-header {
+        justify-content: space-between;
+    }
+    .admin-header button {
+        display: none;
+    }
+    .admin-header h1 {
+        text-align: center;
+        margin-left: 0;
+        flex-grow: 1;
+    }
+    .menu-icon {
+        order: -1; /* Place menu icon first (leftmost) */
+        margin-right: 0;
+        margin-left: 20px;
+    }
+    .side-menu {
+        padding-top: 15px;
+    }
+    .side-menu a {
+        font-size: 20px;
+    }
+}
