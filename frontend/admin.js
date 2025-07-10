@@ -1,3 +1,4 @@
+
 // Helper function to include Authorization header and handle global errors
 async function fetchWithAuth(url, options = {}) {
     const token = localStorage.getItem('jwtToken');
@@ -9,17 +10,14 @@ async function fetchWithAuth(url, options = {}) {
     try {
         const response = await fetch(url, { ...options, headers });
 
-        // Handle unauthorized responses globally
         if (response.status === 401) {
-            localStorage.removeItem('jwtToken'); // Clear invalid token
-            // Only redirect if not already on login page to prevent infinite loops
+            localStorage.removeItem('jwtToken');
             if (window.location.pathname !== '/login.html') {
-                window.location.href = 'login.html'; // Redirect to login
+                window.location.href = 'login.html';
             }
-            throw new Error('Unauthorized'); // Propagate error
+            throw new Error('Unauthorized');
         }
 
-        // Handle other HTTP errors (e.g., 400, 500)
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({ message: 'An unknown error occurred.' }));
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
@@ -28,7 +26,6 @@ async function fetchWithAuth(url, options = {}) {
         return response;
     } catch (error) {
         console.error('fetchWithAuth error:', error);
-        // Re-throw the error so calling functions can still catch it if needed
         throw error;
     }
 }
@@ -37,17 +34,13 @@ async function fetchWithAuth(url, options = {}) {
 import { API_BASE_URL } from './config.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    
-
-    // Karachi coordinates and bounds
     const karachiCenter = [24.9, 67.1];
     const karachiBounds = [[24.75, 66.95], [25.05, 67.25]];
 
     let initialLat = karachiCenter[0];
     let initialLng = karachiCenter[1];
-    let initialZoom = 12; // Default zoom
+    let initialZoom = 12;
 
-    // Check for URL parameters for pin location
     const urlParams = new URLSearchParams(window.location.search);
     const paramLat = urlParams.get('lat');
     const paramLng = urlParams.get('lng');
@@ -61,24 +54,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const map = L.map('mapid').setView([initialLat, initialLng], initialZoom); // Set initial view
-    map.setMaxBounds(karachiBounds); // Restrict map to Karachi bounds
+    const map = L.map('mapid').setView([initialLat, initialLng], initialZoom);
+    map.setMaxBounds(karachiBounds);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        minZoom: 10, // Optional: Set a minimum zoom level to keep Karachi visible
-        maxBoundsViscosity: 1.0 // Prevents panning outside bounds
+        minZoom: 10,
+        maxBoundsViscosity: 1.0
     }).addTo(map);
 
-    // Initialize Leaflet Control Geocoder and add to map
     const geocoderControl = L.Control.geocoder({
         geocodingQueryParams: {
             'viewbox': `${karachiBounds[0][1]},${karachiBounds[0][0]},${karachiBounds[1][1]},${karachiBounds[1][0]}`,
-            'bounded': 1 // Restrict search to viewbox
+            'bounded': 1
         }
     }).addTo(map);
 
-    // Handle geocoder result selection using the captured instance
     geocoderControl.on('markgeocode', function(e) {
         const bbox = e.geocode.bbox;
         const poly = L.polygon([
@@ -88,10 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             bbox.getSouthWest()
         ]).addTo(map);
         map.fitBounds(poly.getBounds());
-        // Optionally, you can add a marker at the result location
-        // L.marker(e.geocode.center).addTo(map).bindPopup(e.geocode.name).openPopup();
     });
-
 
     const pinFormContainer = document.querySelector('.pin-form-container');
     const pinForm = document.getElementById('pinForm');
@@ -100,70 +88,66 @@ document.addEventListener('DOMContentLoaded', () => {
     const descriptionInput = document.getElementById('description');
     const imagesInput = document.getElementById('images');
     const cancelPinButton = document.getElementById('cancelPin');
+    const closePinFormButton = document.getElementById('closePinForm');
 
-    // Image Enlargement Dialog elements
     const imageDialog = document.getElementById('imageDialog');
     const enlargedImage = document.getElementById('enlargedImage');
     const closeImageDialogButton = imageDialog.querySelector('.close-image-dialog');
 
-    // Function to open the image enlargement dialog
     function openImageDialog(src) {
         enlargedImage.src = src;
-        imageDialog.style.display = 'flex'; // Use flex to center content
+        imageDialog.classList.remove('hidden');
+        imageDialog.classList.add('flex');
     }
 
-    // Function to close the image enlargement dialog
     function closeImageDialog() {
-        imageDialog.style.display = 'none';
-        enlargedImage.src = ''; // Clear image source
+        imageDialog.classList.add('hidden');
+        imageDialog.classList.remove('flex');
+        enlargedImage.src = '';
     }
 
-    // Event listener for closing the image dialog
     closeImageDialogButton.addEventListener('click', closeImageDialog);
     imageDialog.addEventListener('click', (event) => {
-        if (event.target === imageDialog) { // Close only if clicking on the overlay
+        if (event.target === imageDialog) {
             closeImageDialog();
         }
     });
 
-
     let currentMarker = null;
 
-    // Load existing pins
     async function loadPins() {
         try {
-            const response = await fetchWithAuth(`${API_BASE_URL}/api/pins`); // Use API_BASE_URL
+            const response = await fetchWithAuth(`${API_BASE_URL}/api/pins`);
             const pins = await response.json();
 
             pins.forEach(pin => {
                 const marker = L.marker([pin.lat, pin.lng]).addTo(map);
-                let popupContent = `<h3>${pin.description}</h3>`;
+                let popupContent = `<h3 class="font-semibold text-lg">${pin.description}</h3>`;
                 if (pin.imageUrls && pin.imageUrls.length > 0) {
+                    popupContent += '<div class="flex space-x-2 mt-2">';
                     pin.imageUrls.forEach(imageUrl => {
-                        popupContent += `<img src="${API_BASE_URL}${imageUrl}" alt="Pin Image" style="max-width:100px; max-height:100px; margin:5px;" class="clickable-image">`; // Use API_BASE_URL
+                        popupContent += `<img src="${API_BASE_URL}${imageUrl}" alt="Pin Image" class="w-24 h-24 object-cover rounded-md cursor-pointer hover:opacity-75 transition-opacity">`;
                     });
+                    popupContent += '</div>';
                 }
                 marker.bindPopup(popupContent);
             });
         } catch (error) {
             console.error('Error loading pins:', error);
-            // fetchWithAuth now handles 401 redirection
         }
     }
 
     loadPins();
 
-    // Event delegation for images inside Leaflet popups
-    map.on('popupopen', function(e) {
+    map.on('popupopen', function (e) {
         const popupContent = e.popup.getElement();
-        const images = popupContent.querySelectorAll('.clickable-image');
+        const images = popupContent.querySelectorAll('img');
         images.forEach(img => {
             img.addEventListener('click', (event) => {
                 openImageDialog(event.target.src);
             });
         });
     });
-
 
     map.on('click', (e) => {
         if (currentMarker) {
@@ -172,7 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
         currentMarker = L.marker(e.latlng).addTo(map);
         latInput.value = e.latlng.lat;
         lngInput.value = e.latlng.lng;
-        pinFormContainer.style.display = 'block';
+        pinFormContainer.classList.remove('hidden');
+        pinFormContainer.classList.add('flex');
     });
 
     pinForm.addEventListener('submit', async (e) => {
@@ -195,13 +180,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 alert('Pin added successfully!');
-                pinFormContainer.style.display = 'none';
+                pinFormContainer.classList.add('hidden');
+                pinFormContainer.classList.remove('flex');
                 pinForm.reset();
                 if (currentMarker) {
                     map.removeLayer(currentMarker);
                     currentMarker = null;
                 }
-                // Reload pins to show the new one
                 map.eachLayer(layer => {
                     if (layer instanceof L.Marker) {
                         map.removeLayer(layer);
@@ -210,7 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadPins();
             } else {
                 alert('Failed to add pin.');
-                // fetchWithAuth now handles 401 redirection
             }
         } catch (error) {
             console.error('Error adding pin:', error);
@@ -219,7 +203,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     cancelPinButton.addEventListener('click', () => {
-        pinFormContainer.style.display = 'none';
+        pinFormContainer.classList.add('hidden');
+        pinFormContainer.classList.remove('flex');
         pinForm.reset();
         if (currentMarker) {
             map.removeLayer(currentMarker);
@@ -227,11 +212,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Removed: logoutButton.addEventListener('click', ...);
-    // This is now handled by the side menu in menu.js
-
-    // Removed: Navigate to View All Pins page
-    // viewPinsButton.addEventListener('click', () => {
-    //     window.location.href = 'view-pins.html';
-    // });
+    closePinFormButton.addEventListener('click', () => {
+        pinFormContainer.classList.add('hidden');
+        pinFormContainer.classList.remove('flex');
+        pinForm.reset();
+        if (currentMarker) {
+            map.removeLayer(currentMarker);
+            currentMarker = null;
+        }
+    });
 });

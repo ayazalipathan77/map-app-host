@@ -1,3 +1,4 @@
+
 // Define the base URL for your backend API
 import { API_BASE_URL } from './config.js';
 
@@ -12,17 +13,14 @@ async function fetchWithAuth(url, options = {}) {
     try {
         const response = await fetch(url, { ...options, headers });
 
-        // Handle unauthorized responses globally
         if (response.status === 401) {
-            localStorage.removeItem('jwtToken'); // Clear invalid token
-            // Only redirect if not already on login page to prevent infinite loops
+            localStorage.removeItem('jwtToken');
             if (window.location.pathname !== '/login.html') {
-                window.location.href = 'login.html'; // Redirect to login
+                window.location.href = 'login.html';
             }
-            throw new Error('Unauthorized'); // Propagate error
+            throw new Error('Unauthorized');
         }
 
-        // Handle other HTTP errors (e.g., 400, 500)
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({ message: 'An unknown error occurred.' }));
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
@@ -31,7 +29,6 @@ async function fetchWithAuth(url, options = {}) {
         return response;
     } catch (error) {
         console.error('fetchWithAuth error:', error);
-        // Re-throw the error so calling functions can still catch it if needed
         throw error;
     }
 }
@@ -39,7 +36,7 @@ async function fetchWithAuth(url, options = {}) {
 document.addEventListener('DOMContentLoaded', () => {
     const pinsContainer = document.getElementById('pinsContainer');
     const backToMapButton = document.getElementById('backToMapButton');
-    const pinFilterInput = document.getElementById('pinFilterInput'); // New
+    const pinFilterInput = document.getElementById('pinFilterInput');
 
     // Pin Detail Modal elements
     const pinDetailModal = document.getElementById('pinDetailModal');
@@ -54,65 +51,63 @@ document.addEventListener('DOMContentLoaded', () => {
     const enlargedImage = document.getElementById('enlargedImage');
     const closeImageDialogButton = imageDialog.querySelector('.close-image-dialog');
 
-    let allPins = []; // To store all fetched pins
+    let allPins = [];
 
-    // Function to open the image enlargement dialog
     function openImageDialog(src) {
         enlargedImage.src = src;
-        imageDialog.style.display = 'flex'; // Use flex to center content
+        imageDialog.classList.remove('hidden');
+        imageDialog.classList.add('flex');
     }
 
-    // Function to close the image enlargement dialog
     function closeImageDialog() {
-        imageDialog.style.display = 'none';
-        enlargedImage.src = ''; // Clear image source
+        imageDialog.classList.add('hidden');
+        imageDialog.classList.remove('flex');
+        enlargedImage.src = '';
     }
 
-    // Event listener for closing the image dialog
     closeImageDialogButton.addEventListener('click', closeImageDialog);
     imageDialog.addEventListener('click', (event) => {
-        if (event.target === imageDialog) { // Close only if clicking on the overlay
+        if (event.target === imageDialog) {
             closeImageDialog();
         }
     });
 
-
     async function loadPins() {
         try {
             const response = await fetchWithAuth(`${API_BASE_URL}/api/pins`);
-            allPins = await response.json(); // Store all pins
-            renderPins(allPins); // Render all pins initially
+            allPins = await response.json();
+            renderPins(allPins);
         } catch (error) {
             console.error('Error loading pins:', error);
-            // fetchWithAuth now handles 401 redirection
         }
     }
 
     function renderPins(pinsToRender) {
-        pinsContainer.innerHTML = ''; // Clear previous pins
+        pinsContainer.innerHTML = '';
 
         if (pinsToRender.length === 0) {
-            pinsContainer.innerHTML = '<p>No pins found matching your filter.</p>';
+            pinsContainer.innerHTML = '<p class="text-gray-500 col-span-full">No pins found matching your filter.</p>';
             return;
         }
 
         pinsToRender.forEach(pin => {
             const pinCard = document.createElement('div');
-            pinCard.classList.add('pin-card');
+            pinCard.className = 'bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 ease-in-out';
             pinCard.innerHTML = `
-                    <h3>${pin.description}</h3>
-                    <p>Lat: ${pin.lat}, Lng: ${pin.lng}</p>
-                    <div class="pin-actions">
-                        <button class="view-details-btn" data-id="${pin.id}">View Details</button>
-                        <button class="edit-btn" data-id="${pin.id}">Edit</button>
-                        <button class="delete-btn" data-id="${pin.id}">Delete</button>
-                        <button class="go-to-pin-btn" data-lat="${pin.lat}" data-lng="${pin.lng}">Go to Pin Location</button>
+                <div class="p-6">
+                    <h3 class="text-lg font-normal text-gray-800 mb-2 truncate">${pin.description}</h3>
+                    <p class="text-md text-gray-700 mb-4">Lat: ${pin.lat.toFixed(4)}, Lng: ${pin.lng.toFixed(4)}</p>
+                    <div class="flex flex-wrap gap-3 justify-center">
+                        <button class="view-details-btn text-sm bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300" data-id="${pin.id}">Details</button>
+                        <button class="edit-btn text-sm bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300" data-id="${pin.id}">Edit</button>
+                        <button class="delete-btn text-sm bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300" data-id="${pin.id}">Delete</button>
+                        <button class="go-to-pin-btn text-sm bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300" data-lat="${pin.lat}" data-lng="${pin.lng}">Go to Pin</button>
                     </div>
-                `;
+                </div>
+            `;
             pinsContainer.appendChild(pinCard);
         });
 
-        // Add event listeners for buttons
         pinsContainer.querySelectorAll('.view-details-btn').forEach(button => {
             button.addEventListener('click', (e) => showPinDetails(e.target.dataset.id));
         });
@@ -149,21 +144,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     const img = document.createElement('img');
                     img.src = `${API_BASE_URL}${imageUrl}`;
                     img.alt = 'Pin Image';
-                    img.style.maxWidth = '150px';
-                    img.style.maxHeight = '150px';
-                    img.style.margin = '5px';
-                    img.classList.add('clickable-image'); // Add class for event listener
-                    img.addEventListener('click', () => openImageDialog(img.src)); // Add click listener
+                    img.className = 'w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-75 transition-opacity';
+                    img.addEventListener('click', () => openImageDialog(img.src));
                     modalImages.appendChild(img);
                 });
             } else {
-                modalImages.innerHTML = '<p>No images available.</p>';
+                modalImages.innerHTML = '<p class="text-gray-500">No images available.</p>';
             }
-            pinDetailModal.style.display = 'block';
+            pinDetailModal.classList.remove('hidden');
+            pinDetailModal.classList.add('flex');
         } catch (error) {
             console.error('Error fetching pin details:', error);
             alert('Failed to load pin details.');
-            // fetchWithAuth now handles 401 redirection
         }
     }
 
@@ -180,10 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (response.ok) {
                     alert('Pin deleted successfully!');
-                    loadPins(); // Reload pins after deletion
+                    loadPins();
                 } else {
                     alert('Failed to delete pin.');
-                    // fetchWithAuth now handles 401 redirection
                 }
             } catch (error) {
                 console.error('Error deleting pin:', error);
@@ -193,26 +184,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function goToPinLocation(lat, lng) {
-        window.location.href = `admin.html?lat=${lat}&lng=${lng}&zoom=14`; // Pass lat, lng, and zoom
+        window.location.href = `admin.html?lat=${lat}&lng=${lng}&zoom=14`;
     }
 
-    // Event listeners for navigation and modal
     backToMapButton.addEventListener('click', () => {
         window.location.href = 'admin.html';
     });
 
     closeModalButton.addEventListener('click', () => {
-        pinDetailModal.style.display = 'none';
+        pinDetailModal.classList.add('hidden');
+        pinDetailModal.classList.remove('flex');
     });
 
     window.addEventListener('click', (event) => {
         if (event.target === pinDetailModal) {
-            pinDetailModal.style.display = 'none';
+            pinDetailModal.classList.add('hidden');
+            pinDetailModal.classList.remove('flex');
         }
     });
 
-    // Event listener for filter input
     pinFilterInput.addEventListener('input', filterPins);
 
-    loadPins(); // Initial load of pins
+    loadPins();
 });
