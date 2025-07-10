@@ -49,14 +49,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Function to open the image enlargement dialog
     function openImageDialog(src) {
+        console.log('Opening image dialog for:', src);
         enlargedImage.src = src;
-        imageDialog.style.display = 'flex'; // Use flex to center content
+        imageDialog.style.display = 'flex';
+        imageDialog.style.zIndex = '99999'; // Ensure it's on top
     }
 
-    // Function to close the image enlargement dialog
     function closeImageDialog() {
+        console.log('Closing image dialog');
         imageDialog.style.display = 'none';
-        enlargedImage.src = ''; // Clear image source
+        enlargedImage.src = '';
     }
 
     // Event listener for closing the image dialog
@@ -78,11 +80,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const marker = L.marker([pin.lat, pin.lng]).addTo(map);
                 latLngs.push([pin.lat, pin.lng]);
 
-                let popupContent = `<h3>${pin.description}</h3>`;
+                const popupContent = document.createElement('div');
+                popupContent.innerHTML = `<h3 class="font-semibold text-lg">${pin.description}</h3>`;
+
                 if (pin.imageUrls && pin.imageUrls.length > 0) {
+                    const imagesContainer = document.createElement('div');
+                    imagesContainer.className = 'flex space-x-2 mt-2';
                     pin.imageUrls.forEach(imageUrl => {
-                        popupContent += `<img src="${API_BASE_URL}${imageUrl}" alt="Pin Image" style="max-width:100px; max-height:100px; margin:5px;" class="clickable-image">`;
+                        const img = document.createElement('img');
+                        img.src = `${API_BASE_URL}${imageUrl}`;
+                        img.alt = 'Pin Image';
+                        img.className = 'w-24 h-24 object-cover rounded-md cursor-pointer hover:opacity-75 transition-opacity';
+                        img.addEventListener('click', () => openImageDialog(img.src));
+                        imagesContainer.appendChild(img);
                     });
+                    popupContent.appendChild(imagesContainer);
                 }
                 marker.bindPopup(popupContent);
             });
@@ -101,7 +113,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Event delegation for images inside Leaflet popups
     map.on('popupopen', function(e) {
         const popupContent = e.popup.getElement();
-        const images = popupContent.querySelectorAll('.clickable-image');
+        const images = popupContent.querySelectorAll('img');
         images.forEach(img => {
             img.addEventListener('click', (event) => {
                 openImageDialog(event.target.src);

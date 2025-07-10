@@ -54,14 +54,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let allPins = [];
 
     function openImageDialog(src) {
+        console.log('Opening image dialog for:', src);
         enlargedImage.src = src;
-        imageDialog.classList.remove('hidden');
-        imageDialog.classList.add('flex');
+        imageDialog.style.display = 'flex';
     }
 
     function closeImageDialog() {
-        imageDialog.classList.add('hidden');
-        imageDialog.classList.remove('flex');
+        console.log('Closing image dialog');
+        imageDialog.style.display = 'none';
         enlargedImage.src = '';
     }
 
@@ -140,6 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modalLng.textContent = pin.lng;
             modalImages.innerHTML = '';
             if (pin.imageUrls && pin.imageUrls.length > 0) {
+                modalImages.innerHTML = ''; // Clear previous images
                 pin.imageUrls.forEach(imageUrl => {
                     const img = document.createElement('img');
                     img.src = `${API_BASE_URL}${imageUrl}`;

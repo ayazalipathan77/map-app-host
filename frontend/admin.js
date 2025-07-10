@@ -95,14 +95,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeImageDialogButton = imageDialog.querySelector('.close-image-dialog');
 
     function openImageDialog(src) {
+        console.log('Opening image dialog for:', src);
         enlargedImage.src = src;
-        imageDialog.classList.remove('hidden');
-        imageDialog.classList.add('flex');
+        imageDialog.style.display = 'flex';
     }
 
     function closeImageDialog() {
-        imageDialog.classList.add('hidden');
-        imageDialog.classList.remove('flex');
+        console.log('Closing image dialog');
+        imageDialog.style.display = 'none';
         enlargedImage.src = '';
     }
 
@@ -122,13 +122,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
             pins.forEach(pin => {
                 const marker = L.marker([pin.lat, pin.lng]).addTo(map);
-                let popupContent = `<h3 class="font-semibold text-lg">${pin.description}</h3>`;
+                const popupContent = document.createElement('div');
+                popupContent.innerHTML = `<h3 class="font-semibold text-lg">${pin.description}</h3>`;
+
                 if (pin.imageUrls && pin.imageUrls.length > 0) {
-                    popupContent += '<div class="flex space-x-2 mt-2">';
+                    const imagesContainer = document.createElement('div');
+                    imagesContainer.className = 'flex space-x-2 mt-2';
                     pin.imageUrls.forEach(imageUrl => {
-                        popupContent += `<img src="${API_BASE_URL}${imageUrl}" alt="Pin Image" class="w-24 h-24 object-cover rounded-md cursor-pointer hover:opacity-75 transition-opacity">`;
+                        const img = document.createElement('img');
+                        img.src = `${API_BASE_URL}${imageUrl}`;
+                        img.alt = 'Pin Image';
+                        img.className = 'w-24 h-24 object-cover rounded-md cursor-pointer hover:opacity-75 transition-opacity';
+                        img.addEventListener('click', () => openImageDialog(img.src));
+                        imagesContainer.appendChild(img);
                     });
-                    popupContent += '</div>';
+                    popupContent.appendChild(imagesContainer);
                 }
                 marker.bindPopup(popupContent);
             });
