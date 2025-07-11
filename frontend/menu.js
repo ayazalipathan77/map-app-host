@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginLinkMobile = document.getElementById('loginLinkMobile');
     const logoutLinkMobile = document.getElementById('logoutLinkMobile');
 
+    const adminMapLink = document.getElementById('adminMapLink');
+    const adminMapLinkMobile = document.getElementById('adminMapLinkMobile');
+
     // Ensure image dialog is hidden on page load
     const imageDialog = document.getElementById('imageDialog');
     if (imageDialog) {
@@ -27,11 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (logoutLink) logoutLink.style.display = 'block';
             if (loginLinkMobile) loginLinkMobile.style.display = 'none';
             if (logoutLinkMobile) logoutLinkMobile.style.display = 'block';
+            if (adminMapLink) adminMapLink.style.display = 'block';
+            if (adminMapLinkMobile) adminMapLinkMobile.style.display = 'block';
         } else {
             if (loginLink) loginLink.style.display = 'block';
             if (logoutLink) logoutLink.style.display = 'none';
             if (loginLinkMobile) loginLinkMobile.style.display = 'block';
             if (logoutLinkMobile) logoutLinkMobile.style.display = 'none';
+            if (adminMapLink) adminMapLink.style.display = 'none';
+            if (adminMapLinkMobile) adminMapLinkMobile.style.display = 'none';
         }
     }
 
