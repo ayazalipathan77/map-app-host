@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/168e85d4-f6fb-46b5-9beb-8bc8742a9ada_james-ting-6N2mSJsKTtA-unsplash.jpg",
+      "PackagePath": "staticwebassets/images/168e85d4-f6fb-46b5-9beb-8bc8742a9ada_james-ting-6N2mSJsKTtA-unsplash.jpg"
+    },
+    {
       "Id": "/home/ayaz/mapapp/backend/wwwroot/images/2238da6f-afb7-4254-949b-af1a73b7ae3a_mehmet-can-atik-wadsyEWgoF0-unsplash.jpg",
       "PackagePath": "staticwebassets/images/2238da6f-afb7-4254-949b-af1a73b7ae3a_mehmet-can-atik-wadsyEWgoF0-unsplash.jpg"
     },
@@ -13,16 +17,40 @@
       "PackagePath": "staticwebassets/images/36bf1216-fc2b-455e-b4f0-aff948f45c3a_pexels-falling4utah-1080953.jpg"
     },
     {
+      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/3ec221e9-fd10-4db8-87bd-898d96c0350b_mehmet-can-atik-wadsyEWgoF0-unsplash.jpg",
+      "PackagePath": "staticwebassets/images/3ec221e9-fd10-4db8-87bd-898d96c0350b_mehmet-can-atik-wadsyEWgoF0-unsplash.jpg"
+    },
+    {
       "Id": "/home/ayaz/mapapp/backend/wwwroot/images/418f1c65-26cd-485d-82b4-802d9d70bbd1_clay-banks-mgLX9vQhxc8-unsplash.jpg",
       "PackagePath": "staticwebassets/images/418f1c65-26cd-485d-82b4-802d9d70bbd1_clay-banks-mgLX9vQhxc8-unsplash.jpg"
     },
     {
-      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/c0213e1d-1ec4-481b-8d71-b8d4572395fb_tania-mousinho-vF0l0bqLRKY-unsplash.jpg",
-      "PackagePath": "staticwebassets/images/c0213e1d-1ec4-481b-8d71-b8d4572395fb_tania-mousinho-vF0l0bqLRKY-unsplash.jpg"
+      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/52bce6da-bdc1-4424-a509-cf72fc9e8da8_james-qualtrough-XG5k76h93iA-unsplash.jpg",
+      "PackagePath": "staticwebassets/images/52bce6da-bdc1-4424-a509-cf72fc9e8da8_james-qualtrough-XG5k76h93iA-unsplash.jpg"
     },
     {
-      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/fbcea8ad-24a7-4a06-9c05-a8537fe4fd84_james-qualtrough-XG5k76h93iA-unsplash.jpg",
-      "PackagePath": "staticwebassets/images/fbcea8ad-24a7-4a06-9c05-a8537fe4fd84_james-qualtrough-XG5k76h93iA-unsplash.jpg"
+      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/6f48e0bc-7a3e-42ec-86df-c9822302e64a_MOA_H1.webp",
+      "PackagePath": "staticwebassets/images/6f48e0bc-7a3e-42ec-86df-c9822302e64a_MOA_H1.webp"
+    },
+    {
+      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/7aabcde4-a9b4-4194-895d-80719428dc9f_tania-mousinho-vF0l0bqLRKY-unsplash.jpg",
+      "PackagePath": "staticwebassets/images/7aabcde4-a9b4-4194-895d-80719428dc9f_tania-mousinho-vF0l0bqLRKY-unsplash.jpg"
+    },
+    {
+      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/7ba079e4-a202-4e4c-b5fb-c2db169c068e_axp-photography-qORARYNS0s4-unsplash.jpg",
+      "PackagePath": "staticwebassets/images/7ba079e4-a202-4e4c-b5fb-c2db169c068e_axp-photography-qORARYNS0s4-unsplash.jpg"
+    },
+    {
+      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/9230ddf4-2d43-448d-9e54-e0aff8675814_Artsans.jpg",
+      "PackagePath": "staticwebassets/images/9230ddf4-2d43-448d-9e54-e0aff8675814_Artsans.jpg"
+    },
+    {
+      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/92ca8712-aa3d-4c2c-a246-a58fef3fdeca_ab6761610000e5eb37be9aa9f3c193ce17b75292.jpg",
+      "PackagePath": "staticwebassets/images/92ca8712-aa3d-4c2c-a246-a58fef3fdeca_ab6761610000e5eb37be9aa9f3c193ce17b75292.jpg"
+    },
+    {
+      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/cb48de08-9454-4175-a65c-7bbe7ebdd41c_tania-mousinho-vF0l0bqLRKY-unsplash.jpg",
+      "PackagePath": "staticwebassets/images/cb48de08-9454-4175-a65c-7bbe7ebdd41c_tania-mousinho-vF0l0bqLRKY-unsplash.jpg"
     },
     {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.MapApp.Microsoft.AspNetCore.StaticWebAssets.props",

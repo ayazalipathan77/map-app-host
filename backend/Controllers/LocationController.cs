@@ -27,7 +27,11 @@ namespace MapApp.Controllers
             }
 
             var results = karachiLandmarks
-                .Where(l => l.GetType().GetProperty("Name").GetValue(l).ToString().ToLower().Contains(query.ToLower()))
+                .Where(l => 
+                {
+                    var name = l.GetType().GetProperty("Name")?.GetValue(l)?.ToString();
+                    return name != null && name.ToLower().Contains(query.ToLower());
+                })
                 .ToList();
 
             return Ok(results);

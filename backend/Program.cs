@@ -18,7 +18,19 @@ builder.Services.AddSwaggerGen();
 
 // Configure DbContext with SQLite
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))); // Use connection string from appsettings.json
+{
+    var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+    if (string.IsNullOrEmpty(connectionString))
+    {
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    }
+
+    if (string.IsNullOrEmpty(connectionString))
+    {
+        throw new InvalidOperationException("DATABASE_URL environment variable or 'DefaultConnection' in appsettings.json is not set.");
+    }
+    options.UseNpgsql(connectionString);
+});
 
 // Removed: builder.Services.AddSingleton<PinRepository>(sp =>
 // {

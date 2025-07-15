@@ -92,7 +92,7 @@ namespace MapApp.Controllers
             }
 
             // Determine images to delete
-            var imagesToDelete = existingPin.ImageUrls.Except(existingImageUrlsToKeep ?? new List<string>()).ToList();
+            var imagesToDelete = (existingPin.ImageUrls ?? new List<string>()).Except(existingImageUrlsToKeep ?? new List<string>()).ToList();
             foreach (var imageUrl in imagesToDelete)
             {
                 var filePath = Path.Combine(_env.WebRootPath, imageUrl.TrimStart('/'));

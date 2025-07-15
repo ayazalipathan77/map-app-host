@@ -30,7 +30,7 @@ namespace MapApp.Data
             await _context.SaveChangesAsync(); // Use SaveChangesAsync
         }
 
-        public async Task<Pin> GetPinById(Guid id) // Changed to async Task<Pin>
+        public async Task<Pin?> GetPinById(Guid id) // Changed to async Task<Pin?>
         {
             return await _context.Pins.FirstOrDefaultAsync(p => p.Id == id); // Use FirstOrDefaultAsync
         }
