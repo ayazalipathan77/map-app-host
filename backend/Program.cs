@@ -127,13 +127,14 @@ static string GetConnectionString(WebApplicationBuilder builder)
             // Parse Render's DATABASE_URL format: postgresql://username:password@host:port/database
             var uri = new Uri(databaseUrl);
             var userInfo = uri.UserInfo.Split(':');
+            var port = uri.Port == -1 ? 5432 : uri.Port;
 
             if (userInfo.Length != 2)
             {
                 throw new InvalidOperationException("Invalid DATABASE_URL format - user info should contain username:password");
             }
 
-            var connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.LocalPath.Substring(1)};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+            var connectionString = $"Host={uri.Host};Port={port};Database={uri.LocalPath.Substring(1)};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
 
             Console.WriteLine($"Using DATABASE_URL connection string for host: {uri.Host}");
             return connectionString;
