@@ -16,27 +16,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configure DbContext with SQLite
+// Configure DbContext with PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
-    if (string.IsNullOrEmpty(connectionString))
-    {
-        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    }
-
-    if (string.IsNullOrEmpty(connectionString))
-    {
-        throw new InvalidOperationException("DATABASE_URL environment variable or 'DefaultConnection' in appsettings.json is not set.");
-    }
+    var connectionString = GetConnectionString(builder);
     options.UseNpgsql(connectionString);
 });
-
-// Removed: builder.Services.AddSingleton<PinRepository>(sp =>
-// {
-//     var dataPath = Path.Combine(builder.Environment.ContentRootPath, "Data", "pins.json");
-//     return new PinRepository(dataPath);
-// });
 
 // Register PinRepository to use AppDbContext
 builder.Services.AddScoped<PinRepository>(); // Changed to Scoped as DbContext is Scoped
@@ -62,8 +47,8 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = false, // Corrected: Added comma
-        ValidateAudience = false, // Corrected: Added comma
+        ValidateIssuer = false,
+        ValidateAudience = false,
         ClockSkew = TimeSpan.Zero // No leeway for token expiration
     };
 });
@@ -87,7 +72,18 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.Migrate();
+
+    try
+    {
+        Console.WriteLine("Applying database migrations...");
+        dbContext.Database.Migrate();
+        Console.WriteLine("Database migrations applied successfully.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error applying migrations: {ex.Message}");
+        throw;
+    }
 }
 
 // Configure the HTTP request pipeline.
@@ -116,3 +112,47 @@ app.UseAuthorization(); // Existing
 app.MapControllers();
 
 app.Run();
+
+// Helper method to get connection string
+static string GetConnectionString(WebApplicationBuilder builder)
+{
+    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+    Console.WriteLine($"DATABASE_URL exists: {!string.IsNullOrEmpty(databaseUrl)}");
+
+    if (!string.IsNullOrEmpty(databaseUrl))
+    {
+        try
+        {
+            // Parse Render's DATABASE_URL format: postgresql://username:password@host:port/database
+            var uri = new Uri(databaseUrl);
+            var userInfo = uri.UserInfo.Split(':');
+
+            if (userInfo.Length != 2)
+            {
+                throw new InvalidOperationException("Invalid DATABASE_URL format - user info should contain username:password");
+            }
+
+            var connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.LocalPath.Substring(1)};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+
+            Console.WriteLine($"Using DATABASE_URL connection string for host: {uri.Host}");
+            return connectionString;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error parsing DATABASE_URL: {ex.Message}");
+            throw new InvalidOperationException($"Failed to parse DATABASE_URL: {ex.Message}");
+        }
+    }
+
+    // Fallback to local connection string
+    var fallbackConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+    if (string.IsNullOrEmpty(fallbackConnectionString))
+    {
+        throw new InvalidOperationException("Neither DATABASE_URL environment variable nor 'DefaultConnection' in appsettings.json is set.");
+    }
+
+    Console.WriteLine("Using fallback connection string from appsettings.json");
+    return fallbackConnectionString;
+}
