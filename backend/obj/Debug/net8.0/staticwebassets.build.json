@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "k42b/24SuwQW5L4xhIHjR/000Y+HO+uJ0cbJMaT3q+o=",
+  "Hash": "a9NGuykx+KDNj+Nm2oYPaoMxxUGY2dTZnQT7J5QFRh4=",
   "Source": "MapApp",
   "BasePath": "_content/MapApp",
   "Mode": "Default",
@@ -110,6 +110,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/edit-pin.js"
+    },
+    {
+      "Identity": "/home/ayaz/mapapp/backend/wwwroot/images/8c0d137c-0ab7-41f7-a865-cdab2e3e5256_ab6761610000e5eb37be9aa9f3c193ce17b75292.jpg",
+      "SourceId": "MapApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/ayaz/mapapp/backend/wwwroot/",
+      "BasePath": "_content/MapApp",
+      "RelativePath": "images/8c0d137c-0ab7-41f7-a865-cdab2e3e5256_ab6761610000e5eb37be9aa9f3c193ce17b75292.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/8c0d137c-0ab7-41f7-a865-cdab2e3e5256_ab6761610000e5eb37be9aa9f3c193ce17b75292.jpg"
     },
     {
       "Identity": "/home/ayaz/mapapp/backend/wwwroot/images/logo.png",

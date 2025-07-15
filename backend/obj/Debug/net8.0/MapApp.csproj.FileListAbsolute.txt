@@ -114,3 +114,5 @@
 /home/ayaz/mapapp/backend/bin/Debug/net8.0/Npgsql.dll
 /home/ayaz/mapapp/backend/bin/Debug/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll
 /home/ayaz/mapapp/backend/obj/Debug/net8.0/MapApp.sourcelink.json
+/home/ayaz/mapapp/backend/bin/Debug/net8.0/CloudinaryDotNet.dll
+/home/ayaz/mapapp/backend/bin/Debug/net8.0/Newtonsoft.Json.dll

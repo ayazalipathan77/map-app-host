@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer; // Added
 using Microsoft.IdentityModel.Tokens; // Added
 using System.Text; // Added
 using System; // Added for Guid
+using CloudinaryDotNet; // Added for Cloudinary
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Configure Cloudinary
+var cloudinaryUrl = builder.Configuration["CLOUDINARY_URL"];
+if (string.IsNullOrEmpty(cloudinaryUrl))
+{
+    throw new InvalidOperationException("CLOUDINARY_URL not configured. Please set 'CLOUDINARY_URL' in appsettings.json or environment variables.");
+}
+var cloudinaryAccount = new CloudinaryDotNet.Account(cloudinaryUrl);
+builder.Services.AddSingleton(new Cloudinary(cloudinaryAccount));
 
 // Configure DbContext with PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>

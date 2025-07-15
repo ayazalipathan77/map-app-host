@@ -21,6 +21,10 @@
       "PackagePath": "staticwebassets/edit-pin.js"
     },
     {
+      "Id": "/home/ayaz/mapapp/backend/wwwroot/images/8c0d137c-0ab7-41f7-a865-cdab2e3e5256_ab6761610000e5eb37be9aa9f3c193ce17b75292.jpg",
+      "PackagePath": "staticwebassets/images/8c0d137c-0ab7-41f7-a865-cdab2e3e5256_ab6761610000e5eb37be9aa9f3c193ce17b75292.jpg"
+    },
+    {
       "Id": "/home/ayaz/mapapp/backend/wwwroot/images/logo.png",
       "PackagePath": "staticwebassets/images/logo.png"
     },

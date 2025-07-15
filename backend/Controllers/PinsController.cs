@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using CloudinaryDotNet; // Added for Cloudinary
+using CloudinaryDotNet.Actions; // Added for Cloudinary actions
 
 namespace MapApp.Controllers
 {
@@ -17,11 +19,13 @@ namespace MapApp.Controllers
     {
         private readonly PinRepository _pinRepository;
         private readonly IWebHostEnvironment _env;
+        private readonly Cloudinary _cloudinary; // Added for Cloudinary
 
-        public PinsController(PinRepository pinRepository, IWebHostEnvironment env)
+        public PinsController(PinRepository pinRepository, IWebHostEnvironment env, Cloudinary cloudinary)
         {
             _pinRepository = pinRepository;
             _env = env;
+            _cloudinary = cloudinary;
         }
 
         [HttpGet]
@@ -48,23 +52,15 @@ namespace MapApp.Controllers
             var imageUrls = new List<string>();
             if (images != null && images.Any())
             {
-                var uploadsFolder = Path.Combine(_env.WebRootPath, "images");
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
-
                 foreach (var image in images)
                 {
                     if (image.Length > 0)
                     {
-                        var uniqueFileName = Guid.NewGuid().ToString() + "_" + image.FileName;
-                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        var uploadResult = await UploadImageToCloudinary(image);
+                        if (uploadResult != null)
                         {
-                            await image.CopyToAsync(fileStream);
+                            imageUrls.Add(uploadResult.SecureUrl.ToString());
                         }
-                        imageUrls.Add($"/images/{uniqueFileName}");
                     }
                 }
             }
@@ -91,38 +87,26 @@ namespace MapApp.Controllers
                 return NotFound();
             }
 
-            // Determine images to delete
+            // Determine images to delete from Cloudinary
             var imagesToDelete = (existingPin.ImageUrls ?? new List<string>()).Except(existingImageUrlsToKeep ?? new List<string>()).ToList();
             foreach (var imageUrl in imagesToDelete)
             {
-                var filePath = Path.Combine(_env.WebRootPath, imageUrl.TrimStart('/'));
-                if (System.IO.File.Exists(filePath))
-                {
-                    System.IO.File.Delete(filePath);
-                }
+                await DeleteImageFromCloudinary(imageUrl);
             }
 
-            // Handle new image uploads
+            // Handle new image uploads to Cloudinary
             var newImageUrls = new List<string>();
             if (newImages != null && newImages.Any())
             {
-                var uploadsFolder = Path.Combine(_env.WebRootPath, "images");
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
-
                 foreach (var image in newImages)
                 {
                     if (image.Length > 0)
                     {
-                        var uniqueFileName = Guid.NewGuid().ToString() + "_" + image.FileName;
-                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        var uploadResult = await UploadImageToCloudinary(image);
+                        if (uploadResult != null)
                         {
-                            await image.CopyToAsync(fileStream);
+                            newImageUrls.Add(uploadResult.SecureUrl.ToString());
                         }
-                        newImageUrls.Add($"/images/{uniqueFileName}");
                     }
                 }
             }
@@ -147,21 +131,66 @@ namespace MapApp.Controllers
                 return NotFound();
             }
 
-            // Delete associated image files
+            // Delete associated image files from Cloudinary
             if (existingPin.ImageUrls != null)
             {
                 foreach (var imageUrl in existingPin.ImageUrls)
                 {
-                    var filePath = Path.Combine(_env.WebRootPath, imageUrl.TrimStart('/'));
-                    if (System.IO.File.Exists(filePath))
-                    {
-                        System.IO.File.Delete(filePath);
-                    }
+                    await DeleteImageFromCloudinary(imageUrl);
                 }
             }
 
             await _pinRepository.DeletePin(id);
             return NoContent();
+        }
+
+        private async Task<ImageUploadResult> UploadImageToCloudinary(IFormFile image)
+        {
+            if (image == null || image.Length == 0)
+            {
+                return null;
+            }
+
+            var uploadParams = new ImageUploadParams()
+            {
+                File = new FileDescription(image.FileName, image.OpenReadStream()),
+                PublicId = Guid.NewGuid().ToString(), // Use a GUID as the public ID
+                Folder = "mapapp_images" // Optional: organize images in a folder
+            };
+
+            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+            return uploadResult;
+        }
+
+        private async Task DeleteImageFromCloudinary(string imageUrl)
+        {
+            if (string.IsNullOrEmpty(imageUrl))
+            {
+                return;
+            }
+
+            try
+            {
+                // Extract public ID from Cloudinary URL
+                // Example URL: https://res.cloudinary.com/didfxynsu/image/upload/v1678888888/mapapp_images/some_public_id.jpg
+                var uri = new Uri(imageUrl);
+                var segments = uri.Segments;
+                var publicIdWithExtension = segments.Last();
+                var publicId = Path.GetFileNameWithoutExtension(publicIdWithExtension);
+
+                // If you used a folder, prepend it to the public ID
+                if (segments.Length > 2 && segments[segments.Length - 2].Trim('/') == "mapapp_images")
+                {
+                    publicId = "mapapp_images/" + publicId;
+                }
+
+                var deletionParams = new DeletionParams(publicId);
+                await _cloudinary.DestroyAsync(deletionParams);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting image from Cloudinary: {ex.Message}");
+            }
         }
     }
 }
