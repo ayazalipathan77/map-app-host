@@ -19,6 +19,7 @@ builder.Services.AddSwaggerGen();
 
 // Configure Cloudinary
 var cloudinaryUrl = builder.Configuration["CLOUDINARY_URL"];
+Console.WriteLine($"Cloudinary URL being used: {cloudinaryUrl}"); // Temporary logging
 if (string.IsNullOrEmpty(cloudinaryUrl))
 {
     throw new InvalidOperationException("CLOUDINARY_URL not configured. Please set 'CLOUDINARY_URL' in appsettings.json or environment variables.");
