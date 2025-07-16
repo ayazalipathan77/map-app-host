@@ -17,15 +17,100 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configure Cloudinary
-var cloudinaryUrl = builder.Configuration["CLOUDINARY_URL"];
-Console.WriteLine($"Cloudinary URL being used: {cloudinaryUrl}"); // Temporary logging
+// Configure Cloudinary with enhanced logging and validation
+Console.WriteLine("=== Configuring Cloudinary ===");
+var cloudinaryUrl = builder.Configuration["CLOUDINARY_URL"] ?? Environment.GetEnvironmentVariable("CLOUDINARY_URL");
+
 if (string.IsNullOrEmpty(cloudinaryUrl))
 {
+    Console.WriteLine("❌ ERROR: CLOUDINARY_URL not found in configuration or environment variables");
     throw new InvalidOperationException("CLOUDINARY_URL not configured. Please set 'CLOUDINARY_URL' in appsettings.json or environment variables.");
 }
-var cloudinaryAccount = new CloudinaryDotNet.Account(cloudinaryUrl);
-builder.Services.AddSingleton(new Cloudinary(cloudinaryAccount));
+
+try
+{
+    Console.WriteLine("🔧 Parsing Cloudinary URL...");
+    Console.WriteLine($"   Raw URL format: {cloudinaryUrl.Substring(0, Math.Min(cloudinaryUrl.Length, 20))}...");
+
+    CloudinaryDotNet.Account cloudinaryAccount;
+
+    // Try to parse the URL manually and create account with individual components
+    if (cloudinaryUrl.StartsWith("cloudinary://"))
+    {
+        try
+        {
+            var uri = new Uri(cloudinaryUrl);
+            var userInfo = uri.UserInfo?.Split(':');
+            var cloudName = uri.Host;
+
+            Console.WriteLine($"   Parsed Cloud Name: {cloudName}");
+            Console.WriteLine($"   API Key: {(userInfo?.Length > 0 && !string.IsNullOrEmpty(userInfo[0]) ? "✅ Present" : "❌ Missing")}");
+            Console.WriteLine($"   API Secret: {(userInfo?.Length > 1 && !string.IsNullOrEmpty(userInfo[1]) ? "✅ Present" : "❌ Missing")}");
+
+            if (string.IsNullOrEmpty(cloudName))
+            {
+                throw new InvalidOperationException("Cloud name is missing from Cloudinary URL");
+            }
+
+            if (userInfo?.Length < 2 || string.IsNullOrEmpty(userInfo[0]) || string.IsNullOrEmpty(userInfo[1]))
+            {
+                throw new InvalidOperationException("API Key and Secret are missing from Cloudinary URL");
+            }
+
+            // Create account with individual components (more reliable)
+            cloudinaryAccount = new CloudinaryDotNet.Account(cloudName, userInfo[0], userInfo[1]);
+            Console.WriteLine("✅ Using manual parsing approach");
+        }
+        catch (Exception parseEx)
+        {
+            Console.WriteLine($"❌ ERROR: Failed to parse Cloudinary URL manually: {parseEx.Message}");
+            Console.WriteLine("🔄 Trying CloudinaryDotNet library parsing...");
+
+            // Fallback to library parsing
+            cloudinaryAccount = new CloudinaryDotNet.Account(cloudinaryUrl);
+        }
+    }
+    else
+    {
+        Console.WriteLine("🔄 Using CloudinaryDotNet library parsing...");
+        cloudinaryAccount = new CloudinaryDotNet.Account(cloudinaryUrl);
+    }
+
+    // Log account details (without sensitive info)
+    Console.WriteLine($"✅ Cloudinary Account configured:");
+    Console.WriteLine($"   Cloud Name: {cloudinaryAccount.Cloud}");
+    Console.WriteLine($"   API Key: {(string.IsNullOrEmpty(cloudinaryAccount.ApiKey) ? "❌ Missing" : "✅ Present")}");
+    Console.WriteLine($"   API Secret: {(string.IsNullOrEmpty(cloudinaryAccount.ApiSecret) ? "❌ Missing" : "✅ Present")}");
+
+    // Validate required fields
+    if (string.IsNullOrEmpty(cloudinaryAccount.Cloud))
+    {
+        Console.WriteLine("❌ ERROR: Cloud name is missing from Cloudinary configuration");
+        throw new InvalidOperationException("Cloudinary Cloud name is required");
+    }
+
+    if (string.IsNullOrEmpty(cloudinaryAccount.ApiKey))
+    {
+        Console.WriteLine("❌ ERROR: API Key is missing from Cloudinary configuration");
+        throw new InvalidOperationException("Cloudinary API Key is required");
+    }
+
+    if (string.IsNullOrEmpty(cloudinaryAccount.ApiSecret))
+    {
+        Console.WriteLine("❌ ERROR: API Secret is missing from Cloudinary configuration");
+        throw new InvalidOperationException("Cloudinary API Secret is required");
+    }
+
+    var cloudinary = new Cloudinary(cloudinaryAccount);
+    builder.Services.AddSingleton(cloudinary);
+
+    Console.WriteLine("✅ Cloudinary service registered successfully");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"❌ ERROR: Failed to configure Cloudinary: {ex.Message}");
+    throw new InvalidOperationException($"Failed to configure Cloudinary: {ex.Message}", ex);
+}
 
 // Configure DbContext with PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -37,12 +122,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Register PinRepository to use AppDbContext
 builder.Services.AddScoped<PinRepository>(); // Changed to Scoped as DbContext is Scoped
 
-// Configure JWT Authentication
-var jwtSecret = builder.Configuration["Jwt:Secret"];
+// Configure JWT Authentication with enhanced logging
+Console.WriteLine("=== Configuring JWT Authentication ===");
+var jwtSecret = builder.Configuration["Jwt:Secret"] ?? Environment.GetEnvironmentVariable("JWT_SECRET");
+
 if (string.IsNullOrEmpty(jwtSecret))
 {
+    Console.WriteLine("❌ ERROR: JWT Secret not found in configuration or environment variables");
     throw new InvalidOperationException("JWT Secret not configured. Please set 'Jwt:Secret' in appsettings.json or environment variables.");
 }
+
+Console.WriteLine($"✅ JWT Secret configured (length: {jwtSecret.Length} characters)");
 var key = Encoding.ASCII.GetBytes(jwtSecret);
 
 builder.Services.AddAuthentication(options =>
@@ -78,6 +168,38 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Test Cloudinary connection on startup
+Console.WriteLine("=== Testing Cloudinary Connection ===");
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var cloudinary = scope.ServiceProvider.GetRequiredService<Cloudinary>();
+
+        // Test connection by making a simple API call - list resources
+        var listResult = cloudinary.ListResources();
+
+        if (listResult.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            Console.WriteLine("✅ Cloudinary connection test successful!");
+            Console.WriteLine($"   API Response: {listResult.StatusCode}");
+            Console.WriteLine($"   Resources found: {listResult.Resources?.Length ?? 0}");
+            Console.WriteLine($"   Next cursor: {(string.IsNullOrEmpty(listResult.NextCursor) ? "None" : "Available")}");
+        }
+        else
+        {
+            Console.WriteLine($"⚠️  Cloudinary connection test returned: {listResult.StatusCode}");
+            Console.WriteLine($"   Error: {listResult.Error?.Message ?? "Unknown error"}");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ ERROR: Cloudinary connection test failed: {ex.Message}");
+        // Don't throw here - let the app start but log the issue
+        Console.WriteLine("⚠️  Application will continue, but Cloudinary features may not work properly");
+    }
+}
 
 // Apply migrations on startup
 using (var scope = app.Services.CreateScope())
@@ -123,6 +245,7 @@ app.UseAuthorization(); // Existing
 
 app.MapControllers();
 
+Console.WriteLine("🚀 Application started successfully!");
 app.Run();
 
 // Helper method to get connection string

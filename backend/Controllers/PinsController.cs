@@ -56,6 +56,9 @@ namespace MapApp.Controllers
                 {
                     if (image.Length > 0)
                     {
+                        //console.WriteLine($"Uploading image: {image.FileName}");
+                        // Upload image to Cloudinary
+                        // Ensure the Cloudinary instance is properly configured in Program.cs
                         var uploadResult = await UploadImageToCloudinary(image);
                         if (uploadResult != null)
                         {
@@ -66,7 +69,7 @@ namespace MapApp.Controllers
             }
 
             var pin = new Pin
-            { 
+            {
                 Lat = lat,
                 Lng = lng,
                 Description = description,
