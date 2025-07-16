@@ -18,19 +18,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Configure Cloudinary with enhanced logging and validation
-Console.WriteLine("=== Configuring Cloudinary ===");
+
 var cloudinaryUrl = builder.Configuration["CLOUDINARY_URL"] ?? Environment.GetEnvironmentVariable("CLOUDINARY_URL");
 
 if (string.IsNullOrEmpty(cloudinaryUrl))
 {
-    Console.WriteLine("❌ ERROR: CLOUDINARY_URL not found in configuration or environment variables");
+    
     throw new InvalidOperationException("CLOUDINARY_URL not configured. Please set 'CLOUDINARY_URL' in appsettings.json or environment variables.");
 }
 
 try
 {
-    Console.WriteLine("🔧 Parsing Cloudinary URL...");
-    Console.WriteLine($"   Raw URL format: {cloudinaryUrl.Substring(0, Math.Min(cloudinaryUrl.Length, 20))}...");
+    
+    
 
     CloudinaryDotNet.Account cloudinaryAccount;
 
@@ -44,8 +44,7 @@ try
             var cloudName = uri.Host;
 
             Console.WriteLine($"   Parsed Cloud Name: {cloudName}");
-            Console.WriteLine($"   API Key: {(userInfo?.Length > 0 && !string.IsNullOrEmpty(userInfo[0]) ? "✅ Present" : "❌ Missing")}");
-            Console.WriteLine($"   API Secret: {(userInfo?.Length > 1 && !string.IsNullOrEmpty(userInfo[1]) ? "✅ Present" : "❌ Missing")}");
+            
 
             if (string.IsNullOrEmpty(cloudName))
             {
@@ -59,12 +58,12 @@ try
 
             // Create account with individual components (more reliable)
             cloudinaryAccount = new CloudinaryDotNet.Account(cloudName, userInfo[0], userInfo[1]);
-            Console.WriteLine("✅ Using manual parsing approach");
+            
         }
         catch (Exception parseEx)
         {
-            Console.WriteLine($"❌ ERROR: Failed to parse Cloudinary URL manually: {parseEx.Message}");
-            Console.WriteLine("🔄 Trying CloudinaryDotNet library parsing...");
+            
+            
 
             // Fallback to library parsing
             cloudinaryAccount = new CloudinaryDotNet.Account(cloudinaryUrl);
@@ -72,43 +71,41 @@ try
     }
     else
     {
-        Console.WriteLine("🔄 Using CloudinaryDotNet library parsing...");
+        
         cloudinaryAccount = new CloudinaryDotNet.Account(cloudinaryUrl);
     }
 
     // Log account details (without sensitive info)
-    Console.WriteLine($"✅ Cloudinary Account configured:");
-    Console.WriteLine($"   Cloud Name: {cloudinaryAccount.Cloud}");
-    Console.WriteLine($"   API Key: {(string.IsNullOrEmpty(cloudinaryAccount.ApiKey) ? "❌ Missing" : "✅ Present")}");
-    Console.WriteLine($"   API Secret: {(string.IsNullOrEmpty(cloudinaryAccount.ApiSecret) ? "❌ Missing" : "✅ Present")}");
+    
+    
 
     // Validate required fields
     if (string.IsNullOrEmpty(cloudinaryAccount.Cloud))
     {
-        Console.WriteLine("❌ ERROR: Cloud name is missing from Cloudinary configuration");
+        
         throw new InvalidOperationException("Cloudinary Cloud name is required");
     }
 
     if (string.IsNullOrEmpty(cloudinaryAccount.ApiKey))
     {
-        Console.WriteLine("❌ ERROR: API Key is missing from Cloudinary configuration");
+        
         throw new InvalidOperationException("Cloudinary API Key is required");
     }
 
     if (string.IsNullOrEmpty(cloudinaryAccount.ApiSecret))
     {
-        Console.WriteLine("❌ ERROR: API Secret is missing from Cloudinary configuration");
+        
         throw new InvalidOperationException("Cloudinary API Secret is required");
     }
 
     var cloudinary = new Cloudinary(cloudinaryAccount);
     builder.Services.AddSingleton(cloudinary);
 
-    Console.WriteLine("✅ Cloudinary service registered successfully");
+    
 }
 catch (Exception ex)
 {
-    Console.WriteLine($"❌ ERROR: Failed to configure Cloudinary: {ex.Message}");
+    
     throw new InvalidOperationException($"Failed to configure Cloudinary: {ex.Message}", ex);
 }
 
@@ -123,16 +120,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<PinRepository>(); // Changed to Scoped as DbContext is Scoped
 
 // Configure JWT Authentication with enhanced logging
-Console.WriteLine("=== Configuring JWT Authentication ===");
+
 var jwtSecret = builder.Configuration["Jwt:Secret"] ?? Environment.GetEnvironmentVariable("JWT_SECRET");
 
 if (string.IsNullOrEmpty(jwtSecret))
 {
-    Console.WriteLine("❌ ERROR: JWT Secret not found in configuration or environment variables");
+    
     throw new InvalidOperationException("JWT Secret not configured. Please set 'Jwt:Secret' in appsettings.json or environment variables.");
 }
 
-Console.WriteLine($"✅ JWT Secret configured (length: {jwtSecret.Length} characters)");
+
 var key = Encoding.ASCII.GetBytes(jwtSecret);
 
 builder.Services.AddAuthentication(options =>
@@ -170,7 +167,7 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Test Cloudinary connection on startup
-Console.WriteLine("=== Testing Cloudinary Connection ===");
+
 using (var scope = app.Services.CreateScope())
 {
     try
@@ -183,21 +180,19 @@ using (var scope = app.Services.CreateScope())
         if (listResult.StatusCode == System.Net.HttpStatusCode.OK)
         {
             Console.WriteLine("✅ Cloudinary connection test successful!");
-            Console.WriteLine($"   API Response: {listResult.StatusCode}");
-            Console.WriteLine($"   Resources found: {listResult.Resources?.Length ?? 0}");
-            Console.WriteLine($"   Next cursor: {(string.IsNullOrEmpty(listResult.NextCursor) ? "None" : "Available")}");
+            
         }
         else
         {
-            Console.WriteLine($"⚠️  Cloudinary connection test returned: {listResult.StatusCode}");
-            Console.WriteLine($"   Error: {listResult.Error?.Message ?? "Unknown error"}");
+            
+            
         }
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"❌ ERROR: Cloudinary connection test failed: {ex.Message}");
+        
         // Don't throw here - let the app start but log the issue
-        Console.WriteLine("⚠️  Application will continue, but Cloudinary features may not work properly");
+        
     }
 }
 
@@ -208,9 +203,9 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
-        Console.WriteLine("Applying database migrations...");
+        
         dbContext.Database.Migrate();
-        Console.WriteLine("Database migrations applied successfully.");
+        
     }
     catch (Exception ex)
     {
@@ -245,7 +240,7 @@ app.UseAuthorization(); // Existing
 
 app.MapControllers();
 
-Console.WriteLine("🚀 Application started successfully!");
+
 app.Run();
 
 // Helper method to get connection string
@@ -253,7 +248,7 @@ static string GetConnectionString(WebApplicationBuilder builder)
 {
     var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
-    Console.WriteLine($"DATABASE_URL exists: {!string.IsNullOrEmpty(databaseUrl)}");
+    
 
     if (!string.IsNullOrEmpty(databaseUrl))
     {
@@ -271,7 +266,7 @@ static string GetConnectionString(WebApplicationBuilder builder)
 
             var connectionString = $"Host={uri.Host};Port={port};Database={uri.LocalPath.Substring(1)};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
 
-            Console.WriteLine($"Using DATABASE_URL connection string for host: {uri.Host}");
+            
             return connectionString;
         }
         catch (Exception ex)
@@ -289,6 +284,6 @@ static string GetConnectionString(WebApplicationBuilder builder)
         throw new InvalidOperationException("Neither DATABASE_URL environment variable nor 'DefaultConnection' in appsettings.json is set.");
     }
 
-    Console.WriteLine("Using fallback connection string from appsettings.json");
+    
     return fallbackConnectionString;
 }
