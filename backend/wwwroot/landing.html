@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART KMC - Mapping Solutions</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px; /* Adjust as needed */
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .carousel-slide {
+            display: none;
+            width: 100%;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .carousel-slide.active {
+            display: block;
+            opacity: 1;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 400px; /* Fixed height for images */
+            object-fit: cover;
+        }
+        .carousel-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            z-index: 10;
+        }
+        .carousel-button.prev {
+            left: 0;
+            border-top-right-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+        .carousel-button.next {
+            right: 0;
+            border-top-left-radius: 0.5rem;
+            border-bottom-left-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-100 text-gray-800">
+
+    <!-- Header/Hero Section -->
+    <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20 text-center shadow-lg">
+        <div class="container mx-auto px-4">
+            <h1 class="text-5xl font-bold mb-4">Welcome to SMART KMC</h1>
+            <p class="text-xl mb-8">Innovative Mapping Solutions for Karachi Metropolitan Corporation</p>
+            <a href="login.html" class="bg-white text-blue-700 hover:bg-blue-100 font-bold py-3 px-8 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105">Login</a>
+        </div>
+    </header>
+
+    <!-- Image Carousel Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold text-blue-700 mb-12">Project Highlights</h2>
+            <div class="carousel-container">
+                <div class="carousel-slide active">
+                    <img src="https://picsum.photos/id/237/800/400" alt="Project Highlight 1">
+                    <div class="carousel-caption">
+                        <h3 class="text-xl font-semibold">Urban Planning Visualization</h3>
+                        <p>Detailed mapping for future city development. Credit: Lorem Picsum</p>
+                    </div>
+                </div>
+                <div class="carousel-slide">
+                    <img src="https://picsum.photos/id/1040/800/400" alt="Project Highlight 2">
+                    <div class="carousel-caption">
+                        <h3 class="text-xl font-semibold">Traffic Flow Analysis</h3>
+                        <p>Real-time traffic data for optimized routes. Credit: Lorem Picsum</p>
+                    </div>
+                </div>
+                <div class="carousel-slide">
+                    <img src="https://picsum.photos/id/1047/800/400" alt="Project Highlight 3">
+                    <div class="carousel-caption">
+                        <h3 class="text-xl font-semibold">Public Utility Mapping</h3>
+                        <p>Mapping essential services for efficient maintenance. Credit: Lorem Picsum</p>
+                    </div>
+                </div>
+                <button class="carousel-button prev" onclick="moveSlide(-1)">&#10094;</button>
+                <button class="carousel-button next" onclick="moveSlide(1)">&#10095;</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Introduction Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold text-blue-700 mb-8">About SMART KMC</h2>
+            <p class="text-lg leading-relaxed max-w-3xl mx-auto">
+                SMART KMC is a cutting-edge project designed to revolutionize urban management and public services within the Karachi Metropolitan Corporation. By leveraging advanced mapping technologies, we provide comprehensive, real-time data to enhance decision-making, improve infrastructure, and foster a more connected and efficient city for all its residents. Our platform aims to streamline operations, increase transparency, and empower citizens with accessible information.
+            </p>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold text-blue-700 mb-12">Our Services</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-4">Geospatial Data Management</h3>
+                    <p class="text-gray-700">Centralized system for collecting, storing, and managing vast amounts of geospatial data related to urban infrastructure, demographics, and environmental factors.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-4">Real-time Urban Monitoring</h3>
+                    <p class="text-gray-700">Live tracking and visualization of key urban metrics, including traffic flow, public transport, and utility services, enabling proactive management.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-4">Public Service Optimization</h3>
+                    <p class="text-gray-700">Tools to optimize routes for waste collection, emergency services, and maintenance crews, leading to faster response times and reduced operational costs.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-4">Citizen Engagement Platform</h3>
+                    <p class="text-gray-700">An intuitive interface for citizens to report issues, access public information, and provide feedback, fostering community participation.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-4">Infrastructure Planning & Development</h3>
+                    <p class="text-gray-700">Advanced analytics and visualization tools to support urban planners in making informed decisions for sustainable development and infrastructure projects.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-4">Environmental Monitoring</h3>
+                    <p class="text-gray-700">Monitoring of environmental parameters like air quality, water resources, and green spaces to support ecological conservation efforts.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 text-center">
+        <div class="container mx-auto px-4">
+            <p>&copy; 2025 SMART KMC. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
+                }
+            });
+        }
+
+        function moveSlide(direction) {
+            currentSlide = (currentSlide + direction + slides.length) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        // Auto-advance carousel
+        setInterval(() => {
+            moveSlide(1);
+        }, 5000); // Change image every 5 seconds
+
+        // Initial display
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
