@@ -47,14 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutLink.addEventListener('click', (e) => {
             e.preventDefault();
             localStorage.removeItem('jwtToken');
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
         });
     }
     if (logoutLinkMobile) {
         logoutLinkMobile.addEventListener('click', (e) => {
             e.preventDefault();
             localStorage.removeItem('jwtToken');
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
         });
     }
 
